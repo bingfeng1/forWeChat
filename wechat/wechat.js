@@ -1,4 +1,8 @@
-const sha1 = require('sha1'); //引入加密模块
+const sha1 = require('sha1'); //引入加密模块https = require('https'), 
+const https = require('https'); //引入 htts 模块
+const util = require('util'); //引入 util 工具包
+const accessTokenJson = require('./accessToken'); //引入本地存储的 access_token
+const fs = require('fs');   //引入文件系统
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -7,6 +11,14 @@ class WeChat {
         this.config = config;
         //设置 WeChat 对象属性 token
         this.token = config.token;
+        //设置 WeChat 对象属性 appID
+        this.appID = config.appID;
+        //设置 WeChat 对象属性 appScrect
+        this.appScrect = config.appScrect;
+        //设置 WeChat 对象属性 apiDomain
+        this.apiDomain = config.apiDomain;
+        //设置 WeChat 对象属性 apiURL
+        this.apiURL = config.apiURL;
     }
 
     /**
@@ -33,6 +45,57 @@ class WeChat {
         } else {
             res.send('mismatch');
         }
+    }
+    requestGet(url) {
+        return new Promise(function (resolve, reject) {
+            https.get(url, function (res) {
+                let buffer = [], result = "";
+                //监听 data 事件
+                res.on('data', function (data) {
+                    buffer.push(data);
+                });
+                //监听 数据传输完成事件
+                res.on('end', function () {
+                    result = Buffer.concat(buffer).toString('utf-8');
+                    //将最后结果返回
+                    resolve(result);
+                });
+            }).on('error', function (err) {
+                reject(err);
+            });
+        });
+    }
+
+    getAccessToken() {
+        let that = this;
+        return new Promise(function (resolve, reject) {
+            //获取当前时间 
+            let currentTime = new Date().getTime();
+            //格式化请求地址
+            let url = util.format(that.apiURL.accessTokenApi, that.apiDomain, that.appID, that.appScrect);
+            //判断 本地存储的 access_token 是否有效
+            if (accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime) {
+                that.requestGet(url).then(function (data) {
+                    let result = JSON.parse(data);
+                    if (data.indexOf("errcode") < 0) {
+                        accessTokenJson.access_token = result.access_token;
+                        accessTokenJson.expires_time = new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
+                        //更新本地存储的，这里的fs.writeFile必须要一个错误的返回
+                        fs.writeFile('./wechat/accessToken.json', JSON.stringify(accessTokenJson),(err)=>{
+                            if (err) reject(result);
+                        });
+                        //将获取后的 access_token 返回
+                        resolve(accessTokenJson.access_token);
+                    } else {
+                        //将错误返回
+                        resolve(result);
+                    }
+                });
+            } else {
+                //将本地存储的 access_token 返回
+                resolve(accessTokenJson.access_token);
+            }
+        });
     }
 }
 
