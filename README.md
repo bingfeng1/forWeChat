@@ -27,9 +27,13 @@ windows echosite -config=echosite.yml start name1
 
 # 本软件API
 ## index.js
+- 文件入口
+- 日志功能
 
 ## weChart.js
-- auth
+- auth：与微信服务器进行连接测试
+- requestGet：所有Get请求（后期计划使用request代替实现）
+- getAccessToken：获取验证accessToken
 
 ## config.json
 
