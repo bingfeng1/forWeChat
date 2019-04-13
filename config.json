@@ -1,0 +1,11 @@
+{
+    "token":"wechat",
+    "appID":"填写你自己的appID，同时记得代码里替换private.config，当然也可以自己写一个private.config.json",
+    "appScrect":"填写你自己的Screct，同时记得代码里替换private.config，当然也可以自己写一个private.config.json",
+    "apiDomain":"https://api.weixin.qq.com/",
+    "apiDomain1":"https://api2.weixin.qq.com/",
+    "apiDomain2":"https://sh.weixin.qq.com/",
+    "apiURL":{
+        "accessTokenApi":"%scgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
+    }
+}
