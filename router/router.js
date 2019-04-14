@@ -36,9 +36,17 @@ router.get('/', function (req, res) {
             }
         )
     })
-    //自定义菜单栏
+    //创建自定义菜单栏
     .get('/menuCreate', (req, res) => {
         wechatApp.menuCreate().then(
+            (data) => {
+                res.send(data)
+            }
+        )
+    })
+    //获取自定义菜单栏
+    .get('/menuGet', (req, res) => {
+        wechatApp.menuGet().then(
             (data) => {
                 res.send(data)
             }

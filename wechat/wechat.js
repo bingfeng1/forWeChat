@@ -166,6 +166,19 @@ class WeChat {
             )
         })
     }
+
+    // 获取自定义菜单栏
+    menuGet() {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.menuGet, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            that.requestGet(uri, qs).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
 }
 
 

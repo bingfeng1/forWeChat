@@ -9,6 +9,7 @@
         "accessTokenApi": "%scgi-bin/token",
         "weChatServerIP":"%scgi-bin/getcallbackip",
         "checkNetWork":"%scgi-bin/callback/check",
-        "menuCreate":"%scgi-bin/menu/create"
+        "menuCreate":"%scgi-bin/menu/create",
+        "menuGet":"%scgi-bin/menu/get"
     }
 }

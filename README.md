@@ -41,6 +41,7 @@ windows echosite -config=echosite.yml start name1
 - '/getWeChatServerIP'：从微信服务器获取微信服务器的IP
 - '/checkNetWork'：验证服务器连通情况（可能会用于放在中间件，有三个可用连接地址，如果不通过可以再调用下一个地址）
 - 'menuCreate'：自定义菜单栏
+- 'menuGet'：获取菜单栏信息
 
 ## weChart.js
 - auth：与微信服务器进行连接测试
@@ -50,6 +51,7 @@ windows echosite -config=echosite.yml start name1
 - getWeChatServerIP：获取微信服务器IP地址
 - checkNetWork：检测服务器连接
 - menuCreate：菜单栏的生成
+- menuGet：获取菜单栏信息
 
 # config
 ## mainConfig.json
