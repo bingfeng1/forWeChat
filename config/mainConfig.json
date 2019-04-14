@@ -8,6 +8,7 @@
     "apiURL": {
         "accessTokenApi": "%scgi-bin/token",
         "weChatServerIP":"%scgi-bin/getcallbackip",
-        "checkNetWork":"%scgi-bin/callback/check"
+        "checkNetWork":"%scgi-bin/callback/check",
+        "menuCreate":"%scgi-bin/menu/create"
     }
 }

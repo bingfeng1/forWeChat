@@ -6,6 +6,7 @@ const express = require('express'); //express 框架
 const router = require('./router/router')
 
 const app = express();//实例express框架
+app.use(express.json()) //不知道有什么用，但会多一个req.body
 // const logDirectory = path.join(__dirname, 'log')
 
 // 如果不存在log文件夹，那就创建

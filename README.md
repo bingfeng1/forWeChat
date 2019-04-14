@@ -30,12 +30,17 @@ windows echosite -config=echosite.yml start name1
 - 文件入口
 - 日志功能（已被全部注释）
 
+## middleware.js
+中间件
+- getAccessToken：对token的获取，有一层阻止验证的过滤
+
 ## router/router.js
 从index.js拆出，放入路由功能
 - '/'：微信与服务器建立连接
 - '/getAccessToken'：从微信服务器获取Access_token
 - '/getWeChatServerIP'：从微信服务器获取微信服务器的IP
 - '/checkNetWork'：验证服务器连通情况（可能会用于放在中间件，有三个可用连接地址，如果不通过可以再调用下一个地址）
+- 'menuCreate'：自定义菜单栏
 
 ## weChart.js
 - auth：与微信服务器进行连接测试
@@ -44,12 +49,18 @@ windows echosite -config=echosite.yml start name1
 - getAccessToken：获取验证accessToken
 - getWeChatServerIP：获取微信服务器IP地址
 - checkNetWork：检测服务器连接
+- menuCreate：菜单栏的生成
 
-## config.json
+# config
+## mainConfig.json
+主要配置和路径
+
+## menuConfig.json
+菜单栏的配置
 
 # 启动方式
 - 以在VSCODE中直接F5为最好，可以断点调试
-- 也可以通过npm start或者 node index.js
+- 也可以通过npm start进行热更新
 - 正式部署，需要安装node环境，并全局安装pm2
 https://www.npmjs.com/package/pm2
 
@@ -57,3 +68,4 @@ https://www.npmjs.com/package/pm2
 - 后台：nodejs
 - 版本管理：git（本地）
 - 语法验证：eslint
+- 自动更新：nodemon

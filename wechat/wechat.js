@@ -3,6 +3,7 @@ const util = require('util'); //引入 util 工具包
 const accessTokenJson = require('./accessToken'); //引入本地存储的 access_token
 const fs = require('fs');   //引入文件系统
 const rp = require('request-promise')
+const menuConfig = require('../config/menuConfig.json') //按钮生成的配置
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -66,11 +67,11 @@ class WeChat {
     }
 
     // 所有Post请求
-    requestPost(uri,qs, body) {
+    requestPost(uri, qs, body) {
         return new Promise((resolve, reject) => {
             // 使用了文章中提到的request插件，他相关有一个和promise还有async相关的插件，使用了这个，请求与获取更加优雅
             rp({
-                method:'POST',
+                method: 'POST',
                 uri,
                 qs,
                 body,
@@ -136,16 +137,30 @@ class WeChat {
     }
 
     //检测服务器连接
-    checkNetWork(){
+    checkNetWork() {
         let that = this;
         return new Promise((resolve, reject) => {
             let uri = util.format(that.apiURL.checkNetWork, that.apiDomain);
             let qs = { access_token: that.accessToken }
             let body = {
-                "action": "all", 
+                "action": "all",
                 "check_operator": "DEFAULT"
             }
-            that.requestPost(uri, qs ,body).then(
+            that.requestPost(uri, qs, body).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
+
+    //检测服务器连接
+    menuCreate() {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.menuCreate, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            let body = menuConfig;
+            that.requestPost(uri, qs, body).then(
                 data => resolve(data),
                 err => reject(err)
             )
