@@ -42,6 +42,8 @@ windows echosite -config=echosite.yml start name1
 - '/checkNetWork'：验证服务器连通情况（可能会用于放在中间件，有三个可用连接地址，如果不通过可以再调用下一个地址）
 - 'menuCreate'：自定义菜单栏
 - 'menuGet'：获取菜单栏信息
+- 'menuDelete'：删除菜单栏
+- post'/'：POST请求，用于解析客户端发送来的数据（未完成）
 
 ## weChart.js
 - auth：与微信服务器进行连接测试
@@ -52,6 +54,8 @@ windows echosite -config=echosite.yml start name1
 - checkNetWork：检测服务器连接
 - menuCreate：菜单栏的生成
 - menuGet：获取菜单栏信息
+- menuDelete：删除菜单栏
+- handleMsg：客户端过来的请求（未完成）
 
 # config
 ## mainConfig.json

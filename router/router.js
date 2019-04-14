@@ -4,6 +4,7 @@ const wechat = require('../wechat/wechat');
 let mainConfig = require('../config/mainConfig.json');//引入配置文件
 let privateConfig = require('../private.config');//我自己写的私有配置，该文件未放入git内，可以注释这一段，如果将config中的id和Screct,替换
 
+
 const myMiddleWare = require('../middleware')    //中间件，处理请求时的token获取等
 
 Object.assign(mainConfig, privateConfig) //合并对象，可以注释这一段，如果将config中的id和Screct,替换为自己的话
@@ -12,6 +13,9 @@ const wechatApp = new wechat(mainConfig); //实例wechat 模块
 router.get('/', function (req, res) {
     wechatApp.auth(req, res);
 })
+    .post('/', (req, res) => {
+        wechatApp.handleMsg(req,res);
+    })
     // 本来以为改变中间件位置，可以阻止一层token的获取，结果不行
     .use(
         myMiddleWare.getAccessToken(wechatApp)
@@ -47,6 +51,14 @@ router.get('/', function (req, res) {
     //获取自定义菜单栏
     .get('/menuGet', (req, res) => {
         wechatApp.menuGet().then(
+            (data) => {
+                res.send(data)
+            }
+        )
+    })
+    //删除菜单栏
+    .get('/menuDelete', (req, res) => {
+        wechatApp.menuDelete().then(
             (data) => {
                 res.send(data)
             }

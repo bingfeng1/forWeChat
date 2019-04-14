@@ -4,6 +4,7 @@ const accessTokenJson = require('./accessToken'); //引入本地存储的 access
 const fs = require('fs');   //引入文件系统
 const rp = require('request-promise')
 const menuConfig = require('../config/menuConfig.json') //按钮生成的配置
+const parseString = require('xml2js').parseString
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -178,6 +179,40 @@ class WeChat {
                 err => reject(err)
             )
         })
+    }
+    // 删除菜单栏
+    menuDelete() {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.menuDelete, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            that.requestGet(uri, qs).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
+
+    handleMsg(req, res) {
+        let buffer = [];
+        //监听 data 事件 用于接收数据
+        req.on('data', function (data) {
+            buffer.push(data);
+        });
+        //监听 end 事件 用于处理接收完成的数据
+        req.on('end', function () {
+            let msgXml = Buffer.concat(buffer).toString('utf-8');
+            //解析xml
+            parseString(msgXml, { explicitArray: false }, function (err, result) {
+                if (!err) {
+                    //打印解析结果
+                    console.log(result);
+                } else {
+                    //打印错误信息
+                    console.log(err);
+                }
+            })
+        });
     }
 }
 
