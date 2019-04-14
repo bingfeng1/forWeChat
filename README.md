@@ -28,12 +28,19 @@ windows echosite -config=echosite.yml start name1
 # 本软件API
 ## index.js
 - 文件入口
-- 日志功能
+- 日志功能（已被全部注释）
+
+## router/router.js
+从index.js拆出，放入路由功能
+- '/'：微信与服务器建立连接
+- '/getAccessToken'：从微信服务器获取Access_token
+- '/getWeChatServerIP'：从微信服务器获取微信服务器的IP
 
 ## weChart.js
 - auth：与微信服务器进行连接测试
-- requestGet：所有Get请求（后期计划使用request代替实现）
+- requestGet：所有Get请求（已使用request代替实现）
 - getAccessToken：获取验证accessToken
+- getWeChatServerIP：获取微信服务器IP地址
 
 ## config.json
 
