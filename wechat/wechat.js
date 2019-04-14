@@ -1,8 +1,8 @@
 const sha1 = require('sha1'); //引入加密模块https = require('https'), 
-const https = require('https'); //引入 htts 模块
 const util = require('util'); //引入 util 工具包
 const accessTokenJson = require('./accessToken'); //引入本地存储的 access_token
 const fs = require('fs');   //引入文件系统
+const rp = require('request-promise')
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -19,6 +19,7 @@ class WeChat {
         this.apiDomain = config.apiDomain;
         //设置 WeChat 对象属性 apiURL
         this.apiURL = config.apiURL;
+        //内存中也保存accessToken
         this.accessToken = "";
     }
 
@@ -49,23 +50,18 @@ class WeChat {
     }
 
     // 所有GET请求
-    requestGet(url) {
-        return new Promise(function (resolve, reject) {
-            https.get(url, function (res) {
-                let buffer = [], result = "";
-                //监听 data 事件
-                res.on('data', function (data) {
-                    buffer.push(data);
-                });
-                //监听 数据传输完成事件
-                res.on('end', function () {
-                    result = Buffer.concat(buffer).toString('utf-8');
-                    //将最后结果返回
-                    resolve(result);
-                });
-            }).on('error', function (err) {
+    requestGet(uri, qs) {
+        return new Promise((resolve, reject) => {
+            // 使用了文章中提到的request插件，他相关有一个和promise还有async相关的插件，使用了这个，请求与获取更加优雅
+            rp({
+                uri,
+                qs,
+                json: true
+            }).then((res) => {
+                resolve(res);
+            }, (err) => {
                 reject(err);
-            });
+            })
         });
     }
 
@@ -76,38 +72,49 @@ class WeChat {
             //获取当前时间 
             let currentTime = new Date().getTime();
             //格式化请求地址
-            let url = util.format(that.apiURL.accessTokenApi, that.apiDomain, that.appID, that.appScrect);
-            //判断 本地存储的 access_token 是否有效
+            let url = util.format(that.apiURL.accessTokenApi, that.apiDomain);
+            let qs = {
+                appid: that.appID,
+                secret: that.appScrect,
+                grant_type: 'client_credential'
+            };
+            //判断 本地存储的 access_token 是否有效(虽然有this.accessToken，但程序断开的话就没了，所以还是从文件内先获取一次)
             if (accessTokenJson.access_token === "" || accessTokenJson.expires_time < currentTime) {
-                that.requestGet(url).then(function (data) {
-                    let result = JSON.parse(data);
-                    if (data.indexOf("errcode") < 0) {
-                        accessTokenJson.access_token = result.access_token;
-                        accessTokenJson.expires_time = new Date().getTime() + (parseInt(result.expires_in) - 200) * 1000;
+                that.requestGet(url, qs).then(function (data) {
+                    if (!data.errcode) {
+                        accessTokenJson.access_token = data.access_token;
+                        accessTokenJson.expires_time = new Date().getTime() + (parseInt(data.expires_in) - 200) * 1000;
                         //更新本地存储的，这里的fs.writeFile必须要一个错误的返回
-                        fs.writeFile('./wechat/accessToken.json', JSON.stringify(accessTokenJson),(err)=>{
-                            if (err) reject(result);
+                        fs.writeFile('./wechat/accessToken.json', JSON.stringify(accessTokenJson), (err) => {
+                            if (err) reject(err);
                         });
                         //将获取后的 access_token 返回，同时放入实例中
                         that.accessToken = accessTokenJson.access_token;
                         resolve(accessTokenJson.access_token);
                     } else {
                         //将错误返回
-                        resolve(result);
+                        resolve(data);
                     }
                 });
             } else {
                 //将本地存储的 access_token 返回
+                that.accessToken = accessTokenJson.access_token;
                 resolve(accessTokenJson.access_token);
             }
         });
     }
 
     // 获取微信服务器IP地址
-    async getWeChatServerIP(){
-        let url = util.format(this.apiURL.weChatServerIP,this.apiDomain, this.accessToken);
-        let serverIP = await this.requestGet(url).then(data=>data)
-        return serverIP;
+    getWeChatServerIP() {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.weChatServerIP, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            that.requestGet(uri, qs).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
     }
 }
 
