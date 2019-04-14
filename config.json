@@ -7,6 +7,7 @@
     "apiDomain2": "https://sh.weixin.qq.com/",
     "apiURL": {
         "accessTokenApi": "%scgi-bin/token",
-        "weChatServerIP":"%scgi-bin/getcallbackip"
+        "weChatServerIP":"%scgi-bin/getcallbackip",
+        "checkNetWork":"%scgi-bin/callback/check"
     }
 }

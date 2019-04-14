@@ -35,12 +35,15 @@ windows echosite -config=echosite.yml start name1
 - '/'：微信与服务器建立连接
 - '/getAccessToken'：从微信服务器获取Access_token
 - '/getWeChatServerIP'：从微信服务器获取微信服务器的IP
+- '/checkNetWork'：验证服务器连通情况（可能会用于放在中间件，有三个可用连接地址，如果不通过可以再调用下一个地址）
 
 ## weChart.js
 - auth：与微信服务器进行连接测试
 - requestGet：所有Get请求（已使用request代替实现）
+- requestPost：所有POST请求（这个插件仅获取body内容，不过可以获取全部内容）
 - getAccessToken：获取验证accessToken
 - getWeChatServerIP：获取微信服务器IP地址
+- checkNetWork：检测服务器连接
 
 ## config.json
 

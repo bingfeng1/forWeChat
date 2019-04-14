@@ -65,6 +65,24 @@ class WeChat {
         });
     }
 
+    // 所有Post请求
+    requestPost(uri,qs, body) {
+        return new Promise((resolve, reject) => {
+            // 使用了文章中提到的request插件，他相关有一个和promise还有async相关的插件，使用了这个，请求与获取更加优雅
+            rp({
+                method:'POST',
+                uri,
+                qs,
+                body,
+                json: true
+            }).then((res) => {
+                resolve(res);
+            }, (err) => {
+                reject(err);
+            })
+        });
+    }
+
     // 获取AccessToken
     getAccessToken() {
         let that = this;
@@ -111,6 +129,23 @@ class WeChat {
             let uri = util.format(that.apiURL.weChatServerIP, that.apiDomain);
             let qs = { access_token: that.accessToken }
             that.requestGet(uri, qs).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
+
+    //检测服务器连接
+    checkNetWork(){
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.checkNetWork, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            let body = {
+                "action": "all", 
+                "check_operator": "DEFAULT"
+            }
+            that.requestPost(uri, qs ,body).then(
                 data => resolve(data),
                 err => reject(err)
             )

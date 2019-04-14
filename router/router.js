@@ -25,5 +25,13 @@ router.get('/', function (req, res) {
             }
         )
     })
+    //检测服务器连接
+    .get('/checkNetWork',(req,res)=>{
+        wechatApp.checkNetWork().then(
+            (data) => {
+                res.send(data)
+            }
+        )
+    })
 
 module.exports = router
