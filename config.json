@@ -6,6 +6,7 @@
     "apiDomain1": "https://api2.weixin.qq.com/",
     "apiDomain2": "https://sh.weixin.qq.com/",
     "apiURL": {
-        "accessTokenApi": "%scgi-bin/token?grant_type=client_credential&appid=%s&secret=%s"
+        "accessTokenApi": "%scgi-bin/token?grant_type=client_credential&appid=%s&secret=%s",
+        "weChatServerIP":"%scgi-bin/getcallbackip?access_token=%s"
     }
 }

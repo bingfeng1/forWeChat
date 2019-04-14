@@ -19,6 +19,7 @@ class WeChat {
         this.apiDomain = config.apiDomain;
         //设置 WeChat 对象属性 apiURL
         this.apiURL = config.apiURL;
+        this.accessToken = "";
     }
 
     /**
@@ -46,6 +47,8 @@ class WeChat {
             res.send('mismatch');
         }
     }
+
+    // 所有GET请求
     requestGet(url) {
         return new Promise(function (resolve, reject) {
             https.get(url, function (res) {
@@ -66,6 +69,7 @@ class WeChat {
         });
     }
 
+    // 获取AccessToken
     getAccessToken() {
         let that = this;
         return new Promise(function (resolve, reject) {
@@ -84,7 +88,8 @@ class WeChat {
                         fs.writeFile('./wechat/accessToken.json', JSON.stringify(accessTokenJson),(err)=>{
                             if (err) reject(result);
                         });
-                        //将获取后的 access_token 返回
+                        //将获取后的 access_token 返回，同时放入实例中
+                        that.accessToken = accessTokenJson.access_token;
                         resolve(accessTokenJson.access_token);
                     } else {
                         //将错误返回
@@ -96,6 +101,13 @@ class WeChat {
                 resolve(accessTokenJson.access_token);
             }
         });
+    }
+
+    // 获取微信服务器IP地址
+    async getWeChatServerIP(){
+        let url = util.format(this.apiURL.weChatServerIP,this.apiDomain, this.accessToken);
+        let serverIP = await this.requestGet(url).then(data=>data)
+        return serverIP;
     }
 }
 

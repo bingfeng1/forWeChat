@@ -6,6 +6,7 @@ const path = require('path')
 const rfs = require('rotating-file-stream')
 let config = require('./config');//引入配置文件
 let privateConfig = require('./private.config');//我自己写的私有配置，该文件未放入git内，可以注释这一段，如果将config中的id和Screct,替换为自己的话
+const myMiddleWare = require('./middleware')    //中间件，处理请求时的token获取等
 
 const app = express();//实例express框架
 const logDirectory = path.join(__dirname, 'log')
@@ -24,18 +25,23 @@ const accessLogStream = rfs('access.log', {
 // 中间件中启用
 app.use(morgan('combined', { stream: accessLogStream }))
 
-
 Object.assign(config, privateConfig) //合并对象，可以注释这一段，如果将config中的id和Screct,替换为自己的话
 const wechatApp = new wechat(config); //实例wechat 模块
+app.use(myMiddleWare.getAccessToken(wechatApp))
 
 //用于处理所有进入 80 端口 get 的连接请求
 app.get('/', function (req, res) {
     wechatApp.auth(req, res);
 })
+    //获取TOKEN
     .get('/getAccessToken', function (req, res) {
         wechatApp.getAccessToken().then(function (data) {
             res.send(data);
         });
+    })
+    //获取微信服务器IP
+    .get('/getWeChatServerIP', async function (req, res) {
+        res.send(await wechatApp.getWeChatServerIP());
     })
     //监听80端口
     .listen(80, () => {
