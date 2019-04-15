@@ -19,6 +19,8 @@ windows echosite -config=echosite.yml start name1
 ```
 命令行中的状态变为online成功
 
+- 2019-4-15更新为花生壳，使用花生壳注册使用3000端口
+
 # 建立微信与本地服务的连通
 - 微信公众平台中，基本配置--IP白名单，将购买的域名的ip地址放入
 - 然后在本页面中配置服务器，先等下点击启动
@@ -43,6 +45,7 @@ windows echosite -config=echosite.yml start name1
 - 'menuCreate'：自定义菜单栏
 - 'menuGet'：获取菜单栏信息
 - 'menuDelete'：删除菜单栏
+- 'menuAddconditional'：个性化菜单
 - post'/'：POST请求，用于解析客户端发送来的数据（未完成）
 
 ## weChart.js
@@ -55,6 +58,7 @@ windows echosite -config=echosite.yml start name1
 - menuCreate：菜单栏的生成
 - menuGet：获取菜单栏信息
 - menuDelete：删除菜单栏
+- menuAddconditional：个性化菜单
 - handleMsg：客户端过来的请求（未完成）
 
 # config

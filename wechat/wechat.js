@@ -5,6 +5,7 @@ const fs = require('fs');   //引入文件系统
 const rp = require('request-promise')
 const menuConfig = require('../config/menuConfig.json') //按钮生成的配置
 const parseString = require('xml2js').parseString
+const msg = require('./msg')
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -193,6 +194,20 @@ class WeChat {
         })
     }
 
+    // 创建个性化菜单栏
+    menuAddconditional() {
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.menuAddconditional, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            let body = menuConfig;
+            that.requestPost(uri, qs, body).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
+
     handleMsg(req, res) {
         let buffer = [];
         //监听 data 事件 用于接收数据
@@ -205,8 +220,16 @@ class WeChat {
             //解析xml
             parseString(msgXml, { explicitArray: false }, function (err, result) {
                 if (!err) {
-                    //打印解析结果
-                    console.log(result);
+                    result = result.xml;
+                    let toUser = result.ToUserName; //接收方微信
+                    let fromUser = result.FromUserName;//发送仿微信
+                    //判断事件类型
+                    switch (result.Event.toLowerCase()) {
+                        case 'subscribe':
+                            //回复消息
+                            res.send(msg.txtMsg(fromUser, toUser, '欢迎关注公众号!!!!!成功'));
+                            break;
+                    }
                 } else {
                     //打印错误信息
                     console.log(err);

@@ -64,5 +64,13 @@ router.get('/', function (req, res) {
             }
         )
     })
+    //创建个性化菜单栏
+    .get('/menuAddconditional', (req, res) => {
+        wechatApp.menuAddconditional().then(
+            (data) => {
+                res.send(data)
+            }
+        )
+    })
 
 module.exports = router

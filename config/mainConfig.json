@@ -11,6 +11,7 @@
         "checkNetWork":"%scgi-bin/callback/check",
         "menuCreate":"%scgi-bin/menu/create",
         "menuGet":"%scgi-bin/menu/get",
-        "menuDelete":"%scgi-bin/menu/delete"
+        "menuDelete":"%scgi-bin/menu/delete",
+        "menuAddconditional":"%scgi-bin/menu/addconditional"
     }
 }
