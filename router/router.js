@@ -16,7 +16,7 @@ router.get('/', function (req, res) {
     .post('/', (req, res) => {
         wechatApp.handleMsg(req,res);
     })
-    // 本来以为改变中间件位置，可以阻止一层token的获取，结果不行
+    //这里中间件，对以下需要使用token的地方进行调用
     .use(
         myMiddleWare.getAccessToken(wechatApp)
     )
