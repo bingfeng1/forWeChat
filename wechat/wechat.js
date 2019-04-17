@@ -4,8 +4,8 @@ const accessTokenJson = require('./accessToken'); //引入本地存储的 access
 const fs = require('fs');   //引入文件系统
 const rp = require('request-promise')
 const menuConfig = require('../config/menuConfig.json') //按钮生成的配置
-const parseString = require('xml2js').parseString
-const msg = require('./msg')
+const xmljson = require('fast-xml-parser')  //使用新的xml与json互换
+const msg = require('./dealMsg')
 
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
@@ -218,23 +218,19 @@ class WeChat {
         req.on('end', function () {
             let msgXml = Buffer.concat(buffer).toString('utf-8');
             //解析xml
-            parseString(msgXml, { explicitArray: false }, function (err, result) {
-                if (!err) {
-                    result = result.xml;
-                    let toUser = result.ToUserName; //接收方微信
-                    let fromUser = result.FromUserName;//发送仿微信
-                    //判断事件类型
-                    switch (result.Event.toLowerCase()) {
-                        case 'subscribe':
-                            //回复消息
-                            res.send(msg.txtMsg(fromUser, toUser, '欢迎关注公众号!!!!!成功'));
-                            break;
-                    }
-                } else {
-                    //打印错误信息
-                    console.log(err);
+            let msgJson = xmljson.parse(msgXml)
+            if (msgJson) {
+                let result = msgJson.xml;
+                let toUser = result.ToUserName; //接收方微信
+                let fromUser = result.FromUserName;//发送仿微信
+                //判断事件类型
+                switch (result.Event.toLowerCase()) {
+                    case 'subscribe':
+                        //回复消息
+                        res.send(msg.sendText(fromUser,toUser,"欢迎，哈哈哈哈"));
+                        break;
                 }
-            })
+            }
         });
     }
 }
