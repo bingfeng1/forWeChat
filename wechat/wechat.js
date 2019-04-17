@@ -221,14 +221,74 @@ class WeChat {
             let msgJson = xmljson.parse(msgXml)
             if (msgJson) {
                 let result = msgJson.xml;
-                let toUser = result.ToUserName; //接收方微信
-                let fromUser = result.FromUserName;//发送仿微信
-                //判断事件类型
-                switch (result.Event.toLowerCase()) {
-                    case 'subscribe':
-                        //回复消息
-                        res.send(msg.sendText(fromUser,toUser,"欢迎，哈哈哈哈"));
-                        break;
+                // 返回消息时需要互换
+                let fromUser = result.ToUserName; //接收方微信
+                let toUser = result.FromUserName;//发送方微信
+                // 根据文档，菜单事件都包含一个EventKey（注意，部分内容使用res.send没有用处）
+                if (result.EventKey) {
+                    //判断按钮的EventKey
+                    switch (result.EventKey) {
+                        case 'V1001_TODAY_MUSIC':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `这是一个按钮`));
+                            break;
+                        case 'http://www.soso.com/':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `<a>去搜狗了</a>+指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。MenuID：${result.MenuID}`));
+                            break;
+                        case 'rselfmenu_0_1':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `这是扫码推送事件
+                            ScanCodeInfo：${result.ScanCodeInfo}（扫描信息）
+                            ScanType：${result.ScanCodeInfo.ScanType}（扫描类型，一般是qrcode）
+                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`));
+                            break;
+                        case 'rselfmenu_0_0':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `这是扫码带提示
+                            ScanCodeInfo：${result.ScanCodeInfo}（扫描信息）
+                            ScanType：${result.ScanCodeInfo.ScanType}（扫描类型，一般是qrcode）
+                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`));
+                            break;
+                        case 'rselfmenu_1_0':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `系统拍照发图
+                            SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
+                            Count${result.Count}（发送的图片数量）
+                            PicList${result.PicList}（图片列表）
+                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            break;
+                        case 'rselfmenu_1_1':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `拍照或者相册发图
+                            SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
+                            Count${result.Count}（发送的图片数量）
+                            PicList${result.PicList}（图片列表）
+                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            break;
+                        case 'rselfmenu_1_2':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `微信相册发图
+                            SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
+                            Count${result.Count}（发送的图片数量）
+                            PicList${result.PicList}（图片列表）
+                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            break;
+                        case 'rselfmenu_2_0':
+                            // 回复消息
+                            res.send(msg.sendText(fromUser, toUser, `发送位置
+                            SendLocationInfo${result.SendLocationInfo}（发送的位置信息）
+                            Location_X${result.Location_X}（X坐标信息）
+                            Location_Y${result.Location_Y}（Y坐标信息）
+                            Scale${result.Scale}（精度，可理解为精度或者比例尺、越精细的话 scale越高）
+                            Label${result.Label}（地理位置的字符串信息）
+                            Poiname${result.Poiname}（朋友圈POI的名字，可能为空）`));
+                            break;
+                    }
+                }else
+                //所有接收用户消息，都会有一个MsgId先使用这个判断
+                if(result.MsgId){
+                    console.log("之后在完成，这里的判断方式，可能需要再进行修改")
                 }
             }
         });
