@@ -29,109 +29,98 @@ const sendText = (fromUser,toUser,content)=>{
     })
 }
 
-const sendImage = (fromUser,toUser,content)=>{
+/**
+ * 回复图片消息
+ * @param {*} fromUser 给谁发送
+ * @param {*} toUser 从哪里发
+ * @param {*} MediaId 通过素材管理中的接口上传多媒体文件，得到的id
+ */
+const sendImage = (fromUser,toUser,MediaId)=>{
     return jsonxml({
         ToUserName: toUser,
         FromUserName:fromUser,
         CreateTime:new Date().getTime(),
         MsgType:'image',
         Image:{
-            MediaId:content
+            MediaId
         }
     })
 }
 
-// {/* <xml>
-//   <ToUserName><![CDATA[toUser]]></ToUserName>
-//   <FromUserName><![CDATA[fromUser]]></FromUserName>
-//   <CreateTime>12345678</CreateTime>
-//   <MsgType><![CDATA[voice]]></MsgType>
-//   <Voice>
-//     <MediaId><![CDATA[media_id]]></MediaId>
-//   </Voice>
-// </xml> */}
-
-const sendVoice = (fromUser,toUser,voice)=>{
+/**
+ * 回复语音消息
+ * @param {*} fromUser 给谁发送
+ * @param {*} toUser 从哪里发
+ * @param {*} MediaId 通过素材管理中的接口上传多媒体文件，得到的id
+ */
+const sendVoice = (fromUser,toUser,MediaId)=>{
     return jsonxml({
         ToUserName: toUser,
         FromUserName:fromUser,
         CreateTime:new Date().getTime(),
         MsgType:'voice',
-        Voice:voice
+        Voice:{
+            MediaId
+        }
     })
 }
 
 
-// {/* <xml>
-//   <ToUserName><![CDATA[toUser]]></ToUserName>
-//   <FromUserName><![CDATA[fromUser]]></FromUserName>
-//   <CreateTime>12345678</CreateTime>
-//   <MsgType><![CDATA[video]]></MsgType>
-//   <Video>
-//     <MediaId><![CDATA[media_id]]></MediaId>
-//     <Title><![CDATA[title]]></Title>
-//     <Description><![CDATA[description]]></Description>
-//   </Video>
-// </xml> */}
-
-const sendVideo = (fromUser,toUser,video)=>{
+/**
+ * 回复视频消息
+ * @param {*} fromUser 给谁发送
+ * @param {*} toUser 从哪里发
+ * @param {Object} item MediaId必填，通过素材管理中的接口上传多媒体文件，得到的id、Title：视频标题、Description：视频描述
+ */
+const sendVideo = (fromUser,toUser,item)=>{
     return jsonxml({
         ToUserName: toUser,
         FromUserName:fromUser,
         CreateTime:new Date().getTime(),
         MsgType:'video',
-        Video:video
+        Video:{
+            MediaId:item.MediaId,
+            Title:item.Title,
+            Description:item.Description
+        }
     })
 }
 
-// {/* <xml>
-//   <ToUserName><![CDATA[toUser]]></ToUserName>
-//   <FromUserName><![CDATA[fromUser]]></FromUserName>
-//   <CreateTime>12345678</CreateTime>
-//   <MsgType><![CDATA[music]]></MsgType>
-//   <Music>
-//     <Title><![CDATA[TITLE]]></Title>
-//     <Description><![CDATA[DESCRIPTION]]></Description>
-//     <MusicUrl><![CDATA[MUSIC_Url]]></MusicUrl>
-//     <HQMusicUrl><![CDATA[HQ_MUSIC_Url]]></HQMusicUrl>
-//     <ThumbMediaId><![CDATA[media_id]]></ThumbMediaId>
-//   </Music>
-// </xml> */}
-
-const sendMusic = (fromUser,toUser,music)=>{
+/**
+ * 回复音乐消息
+ * @param {*} fromUser 给谁发送
+ * @param {*} toUser 从哪里发
+ * @param {Object} item ThumbMediaId必填，缩略图的媒体id，通过素材管理中的接口上传多媒体文件，得到的id、Title：音乐标题、Description：音乐描述、MusicURL：音乐链接、HQMusicUrl：高质量音乐链接，WIFI环境优先使用该链接播放音乐
+ */
+const sendMusic = (fromUser,toUser,item)=>{
     return jsonxml({
         ToUserName: toUser,
         FromUserName:fromUser,
         CreateTime:new Date().getTime(),
         MsgType:'music',
-        Music:music
+        Music:{
+            Title:item.Title,
+            Description:item.Description,
+            MusicURL:item.MusicURL,
+            HQMusicUrl:item.HQMusicUrl,
+            ThumbMediaId:item.ThumbMediaId
+        }
     })
 }
-
-// {/* <xml>
-//   <ToUserName><![CDATA[toUser]]></ToUserName>
-//   <FromUserName><![CDATA[fromUser]]></FromUserName>
-//   <CreateTime>12345678</CreateTime>
-//   <MsgType><![CDATA[news]]></MsgType>
-//   <ArticleCount>1</ArticleCount>
-//   <Articles>
-//     <item>
-//       <Title><![CDATA[title1]]></Title>
-//       <Description><![CDATA[description1]]></Description>
-//       <PicUrl><![CDATA[picurl]]></PicUrl>
-//       <Url><![CDATA[url]]></Url>
-//     </item>
-//   </Articles>
-// </xml> */}
-
-const sendArticles = (fromUser,toUser,articles)=>{
+/**
+ * 回复图文消息
+ * @param {*} fromUser 给谁发送
+ * @param {*} toUser 从哪里发
+ * @param {Object} items ArticleCount:图文消息个数；当用户发送文本、图片、视频、图文、地理位置这五种消息时，开发者只能回复1条图文消息；其余场景最多可回复8条图文消息、Articles：数组对象。包含：Title：图文消息标题、Description：图文消息描述、PicUrl：图片链接，支持JPG、PNG格式，较好的效果为大图360*200，小图200*200、Url：点击图文消息跳转链接
+ */
+const sendArticles = (fromUser,toUser,items)=>{
     return jsonxml({
         ToUserName: toUser,
         FromUserName:fromUser,
         CreateTime:new Date().getTime(),
         MsgType:'news',
-        ArticleCount:articles.count,
-        Articles:articles.items
+        ArticleCount:items.ArticleCount,
+        Articles:items.Articles
     })
 }
 

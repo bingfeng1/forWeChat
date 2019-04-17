@@ -224,9 +224,18 @@ class WeChat {
                 // 返回消息时需要互换
                 let fromUser = result.ToUserName; //接收方微信
                 let toUser = result.FromUserName;//发送方微信
+                // let createTime = result.CreateTime;//创建时间
                 // 根据文档，菜单事件都包含一个EventKey（注意，部分内容使用res.send没有用处）
+                /**
+                 *1 关注/取消关注事件
+                 *2 扫描带参数二维码事件
+                 *3 上报地理位置事件
+                 *4 自定义菜单事件
+                 *5 点击菜单拉取消息时的事件推送
+                 *6 点击菜单跳转链接时的事件推送
+                 */
                 if (result.EventKey) {
-                    //判断按钮的EventKey
+                    //判断按钮的EventKey。都是自己在config里面定义的，一样就行
                     switch (result.EventKey) {
                         case 'V1001_TODAY_MUSIC':
                             // 回复消息
@@ -234,61 +243,120 @@ class WeChat {
                             break;
                         case 'http://www.soso.com/':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `<a>去搜狗了</a>+指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。MenuID：${result.MenuID}`));
+                            console.log(`<a>去搜狗了</a>+指菜单ID，如果是个性化菜单，则可以通过这个字段，知道是哪个规则的菜单被点击了。MenuID：${result.MenuID}`);
+                            res.send(msg.sendText(fromUser, toUser, ``));
                             break;
                         case 'rselfmenu_0_1':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `这是扫码推送事件
+                            console.log(`这是扫码推送事件
                             ScanCodeInfo：${result.ScanCodeInfo}（扫描信息）
                             ScanType：${result.ScanCodeInfo.ScanType}（扫描类型，一般是qrcode）
-                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`));
+                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`);
                             break;
                         case 'rselfmenu_0_0':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `这是扫码带提示
+                            console.log(`这是扫码带提示
                             ScanCodeInfo：${result.ScanCodeInfo}（扫描信息）
                             ScanType：${result.ScanCodeInfo.ScanType}（扫描类型，一般是qrcode）
-                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`));
+                            ScanResult：${result.ScanCodeInfo.ScanResult}（扫描结果，即二维码对应的字符串信息）`);
                             break;
                         case 'rselfmenu_1_0':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `系统拍照发图
+                            console.log(`系统拍照发图
                             SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
-                            Count${result.Count}（发送的图片数量）
-                            PicList${result.PicList}（图片列表）
-                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            Count${result.SendPicsInfo.Count}（发送的图片数量）
+                            PicList${result.SendPicsInfo.PicList}（图片列表）
+                            PicMd5Sum${result.SendPicsInfo.item[0].PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
                             break;
                         case 'rselfmenu_1_1':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `拍照或者相册发图
+                            console.log(`拍照或者相册发图
                             SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
-                            Count${result.Count}（发送的图片数量）
-                            PicList${result.PicList}（图片列表）
-                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            Count${result.SendPicsInfo.Count}（发送的图片数量）
+                            PicList${result.SendPicsInfo.PicList}（图片列表）
+                            PicMd5Sum${result.SendPicsInfo.item[0].PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
                             break;
                         case 'rselfmenu_1_2':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `微信相册发图
+                            console.log(`微信相册发图
                             SendPicsInfo${result.SendPicsInfo}（发送的图片信息）
-                            Count${result.Count}（发送的图片数量）
-                            PicList${result.PicList}（图片列表）
-                            PicMd5Sum${result.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`));
+                            Count${result.SendPicsInfo.Count}（发送的图片数量）
+                            PicList${result.SendPicsInfo.PicList}（图片列表）
+                            PicMd5Sum${result.SendPicsInfo.item[0].PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
                             break;
                         case 'rselfmenu_2_0':
                             // 回复消息
-                            res.send(msg.sendText(fromUser, toUser, `发送位置
+                            console.log(`发送位置
                             SendLocationInfo${result.SendLocationInfo}（发送的位置信息）
-                            Location_X${result.Location_X}（X坐标信息）
-                            Location_Y${result.Location_Y}（Y坐标信息）
-                            Scale${result.Scale}（精度，可理解为精度或者比例尺、越精细的话 scale越高）
-                            Label${result.Label}（地理位置的字符串信息）
-                            Poiname${result.Poiname}（朋友圈POI的名字，可能为空）`));
+                            Location_X${result.SendLocationInfo.Location_X}（X坐标信息）
+                            Location_Y${result.SendLocationInfo.Location_Y}（Y坐标信息）
+                            Scale${result.SendLocationInfo.Scale}（精度，可理解为精度或者比例尺、越精细的话 scale越高）
+                            Label${result.SendLocationInfo.Label}（地理位置的字符串信息）
+                            Poiname${result.SendLocationInfo.Poiname}（朋友圈POI的名字，可能为空）`);
                             break;
                     }
-                }else
-                //所有接收用户消息，都会有一个MsgId先使用这个判断
-                if(result.MsgId){
-                    console.log("之后在完成，这里的判断方式，可能需要再进行修改")
+                } else if (result.MsgId) {
+                    //所有接收用户消息，都会有一个MsgId先使用这个判断
+                    switch (result.MsgType) {
+                        case 'text':
+                            var textContent = result.Content;
+                            console.log(textContent)
+                            break;
+                        case 'image':
+                            var imagePicUrl = result.PicUrl;
+                            var imageMediaId = result.MediaId;
+                            console.log(imagePicUrl, imageMediaId)
+                            break;
+                        case 'voice':
+                            var voiceMediaID = result.MediaID;
+                            var voiceFormat = result.Format;
+                            var voiceRecognition = result.Recognition;
+                            console.log(voiceMediaID, voiceFormat, voiceRecognition)
+                            break;
+                        case 'video':
+                            var videoMediaID = result.MediaID;
+                            var videoThumbMediaId = result.ThumbMediaId;
+                            console.log(videoMediaID, videoThumbMediaId)
+                            break;
+                        case 'shortvideo':
+                            var shortvideoMediaID = result.MediaID;
+                            var shortvideoThumbMediaId = result.ThumbMediaId;
+                            console.log(shortvideoMediaID, shortvideoThumbMediaId)
+                            break;
+                        case 'location':
+                            var locationLocation_X = result.Location_X;
+                            var locationLocation_Y = result.Location_Y;
+                            var locationScale = result.Scale;
+                            var locationLabel = result.Label;
+                            console.log(locationLocation_X, locationLocation_Y, locationScale, locationLabel)
+                            break;
+                        case 'link':
+                            var linkTitle = result.LocatiTitleon_X;
+                            var linkDescription = result.Description;
+                            var linkUrl = result.Url;
+                            console.log(linkTitle, linkDescription, linkUrl)
+                            break;
+                    }
+                } else {
+                    // 如果没有定义的按钮key也没有msgid，那么就是关注/取消关注事件、上报地理位置事件
+                    switch (result.Event) {
+                        case "subscribe":
+                            res.send(msg.sendText(fromUser, toUser, `欢迎关注晓鸣测试公众号`));
+                            console.log('有人关注公众号了')
+                            break;
+                        case "unsubscribe":
+                            // res.send(msg.sendText(fromUser, toUser, `成功取消关注公众号`));
+                            console.log('有人取关公众号了')
+                            break;
+                        case "LOCATION":
+                            var Latitude = result.Latitude;
+                            var Longitude = result.Longitude;
+                            var Precision = result.Precision;
+                            console.log(Latitude,Longitude,Precision);
+                            break;
+                        default:
+                            console.log("未知操作", result)
+                    }
                 }
             }
         });

@@ -48,6 +48,7 @@ windows echosite -config=echosite.yml start name1
 - 'menuAddconditional'：个性化菜单
 - post'/'：POST请求，用于解析客户端发送来的数据（未完成）
 
+# wechat
 ## weChart.js
 - auth：与微信服务器进行连接测试
 - requestGet：所有Get请求（已使用request代替实现）
@@ -59,7 +60,16 @@ windows echosite -config=echosite.yml start name1
 - menuGet：获取菜单栏信息
 - menuDelete：删除菜单栏
 - menuAddconditional：个性化菜单
-- handleMsg：客户端过来的请求（未完成）
+- handleMsg：客户端过来的请求（未完成），多重判断，还需要整理一下，哪些是需要服务器提供回复的，因为部分回复是必须的
+
+## dealMsg.js
+将传来的内容，变为微信规定的xml
+- sendText：发送文字信息
+- sendImage：回复图片消息
+- sendVoice：回复语音消息
+- sendVideo：回复视频消息
+- sendMusic：回复音乐消息
+- sendArticles：回复图文消息
 
 # config
 ## mainConfig.json
