@@ -71,6 +71,11 @@ windows echosite -config=echosite.yml start name1
 - sendMusic：回复音乐消息
 - sendArticles：回复图文消息
 
+## receiveMsg.js
+- EventKey：自定义按钮设置的key
+- Msg：用户主动发送信息
+- Event：其他事件
+
 # config
 ## mainConfig.json
 主要配置和路径
