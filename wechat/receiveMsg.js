@@ -38,7 +38,7 @@ const EventKey = new Map()
                 Count${result.SendPicsInfo.Count}（发送的图片数量）
                 PicList${result.SendPicsInfo.PicList}（图片列表）
                 PicMd5Sum${result.SendPicsInfo.PicList.item.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
-                res.send(msg.sendText(result, `系统拍照发图`));
+                // res.send(msg.sendText(result, `系统拍照发图`));
         })
     .set("rselfmenu_1_1",
         function (res, result) {
@@ -47,7 +47,7 @@ const EventKey = new Map()
                 Count${result.SendPicsInfo.Count}（发送的图片数量）
                 PicList${result.SendPicsInfo.PicList}（图片列表）
                 PicMd5Sum${result.SendPicsInfo.PicList.item.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
-            res.send(msg.sendText(result, `拍照或者相册发图`));
+            // res.send(msg.sendText(result, `拍照或者相册发图`));
         })
     .set("rselfmenu_1_2",
         function (res, result) {
@@ -56,7 +56,7 @@ const EventKey = new Map()
                 Count${result.SendPicsInfo.Count}（发送的图片数量）
                 PicList${result.SendPicsInfo.PicList}（图片列表）
                 PicMd5Sum${result.SendPicsInfo.PicList.item.PicMd5Sum}（图片的MD5值，开发者若需要，可用于验证接收到图片）`);
-            res.send(msg.sendText(result, `微信相册发图`));
+            // res.send(msg.sendText(result, `微信相册发图`));
         })
     .set("rselfmenu_2_0",
         function (res, result) {
@@ -67,7 +67,7 @@ const EventKey = new Map()
                 Scale${result.SendLocationInfo.Scale}（精度，可理解为精度或者比例尺、越精细的话 scale越高）
                 Label${result.SendLocationInfo.Label}（地理位置的字符串信息）
                 Poiname${result.SendLocationInfo.Poiname}（朋友圈POI的名字，可能为空）`);
-            res.send(msg.sendText(result, `微信相册发图`));
+            // res.send(msg.sendText(result, `发送位置`));
         })
 
 const MsgType = new Map()
@@ -86,7 +86,7 @@ const MsgType = new Map()
         })
     .set("voice"
         , function (res, result) {
-            let voiceMediaID = result.MediaID;
+            let voiceMediaID = result.MediaId;
             let voiceFormat = result.Format;
             let voiceRecognition = result.Recognition;
             console.log(voiceMediaID, voiceFormat, voiceRecognition)
@@ -94,7 +94,7 @@ const MsgType = new Map()
         })
     .set("video"
         , function (res, result) {
-            let videoMediaID = result.MediaID;
+            let videoMediaID = result.MediaId;
             let videoThumbMediaId = result.ThumbMediaId;
             console.log(videoMediaID, videoThumbMediaId)
             res.send(msg.sendText(result, `回馈视频`));
@@ -117,7 +117,7 @@ const MsgType = new Map()
         })
     .set("link"
         , function (res, result) {
-            let linkTitle = result.LocatiTitleon_X;
+            let linkTitle = result.Title;
             let linkDescription = result.Description;
             let linkUrl = result.Url;
             console.log(linkTitle, linkDescription, linkUrl)
@@ -132,7 +132,7 @@ const Event = new Map()
         })
     .set("unsubscribe",
         function (res, result) {
-            res.send(msg.sendText(result, `成功取消关注公众号`));
+            // res.send(msg.sendText(result, `成功取消关注公众号`));
             console.log('有人取关公众号了')
         })
     .set("LOCATION",
@@ -140,7 +140,7 @@ const Event = new Map()
             let Latitude = result.Latitude;
             let Longitude = result.Longitude;
             let Precision = result.Precision;
-            console.log(Latitude, Longitude, Precision);
+            console.log('??????',Latitude, Longitude, Precision);
         })
 
 module.exports = {

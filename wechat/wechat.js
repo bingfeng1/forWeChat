@@ -7,6 +7,21 @@ const menuConfig = require('../config/menuConfig.json') //按钮生成的配置
 const xmljson = require('fast-xml-parser')  //使用新的xml与json互换
 const receiveMsg = require('./receiveMsg')  //处理传来的信息
 
+
+//这里的判断，仅在未认证域名下的测试，绝对不能在正式环境中，认证域名下使用！！！！！！！！！！！！！！！！！！
+//因为根据百度，未认证的域名，会造成请求多次发送
+//可能出现重复事件发送情况，这里需要对重复事件有一个判断
+const isrepeat = new Map();
+// 设置5秒的回收时间，判断FromUserName_CreateTime后的延时回收
+function isrepeatTS(id) {
+    // console.log(id);
+    isrepeat.set(id);
+    setTimeout(() => {
+        isrepeat.delete(id)
+    }, 5000)
+}
+//这里的判断，仅在未认证域名下的测试，绝对不能在正式环境中，认证域名下使用！！！！！！！！！！！！！！！！！！
+
 //构建 WeChat 对象 即 js中 函数就是对象
 class WeChat {
     constructor(config) {
@@ -24,9 +39,6 @@ class WeChat {
         this.apiURL = config.apiURL;
         //内存中也保存accessToken
         this.accessToken = "";
-        //可能出现重复事件发送情况，这里需要对重复事件有一个判断
-        this.MsgId = "";
-        this.FromUserName_CreateTime = ""
     }
 
     /**
@@ -213,7 +225,6 @@ class WeChat {
 
     handleMsg(req, res) {
         let buffer = [];
-        let that = this;
         //监听 data 事件 用于接收数据
         req.on('data', function (data) {
             buffer.push(data);
@@ -225,13 +236,30 @@ class WeChat {
             let msgJson = xmljson.parse(msgXml)
             if (msgJson) {
                 let result = msgJson.xml;
-                //微信官方文档中，关于重复发送事件处理已有相应去重办法
-                if (that.FromUserName_CreateTime === `${result.FromUserName} + ${result.CreateTime}`) {
-                    return res.send('')
-                } else {
-                    that.FromUserName_CreateTime = `${result.FromUserName} + ${result.CreateTime}`
-                }
 
+                //这里的判断，仅在未认证域名下的测试，绝对不能在正式环境中，认证域名下使用！！！！！！！！！！！！！！！！！！
+                //因为根据百度，未认证的域名，会造成请求多次发送
+                let tempStr = `${result.FromUserName} + ${result.CreateTime}`
+                console.log(tempStr, result.MsgId)
+                if (isrepeat.has(tempStr)) {
+                    if (isrepeat.get(tempStr) === undefined && result.MsgId !== undefined) {
+                        return res.send('')
+                    }
+                    if (isrepeat.get(tempStr) === result.MsgId) {
+                        return res.send('')
+                    }
+                } else {
+                    isrepeatTS(tempStr, result.MsgId)
+                    let tempStr1 = `${result.FromUserName} + ${result.CreateTime + 1}`
+                    isrepeatTS(tempStr1, result.MsgId)
+                    let tempStr2 = `${result.FromUserName} + ${result.CreateTime + 2}`
+                    isrepeatTS(tempStr2, result.MsgId)
+                    let tempStr3 = `${result.FromUserName} + ${result.CreateTime + 3}`
+                    isrepeatTS(tempStr3, result.MsgId)
+                    let tempStr4 = `${result.FromUserName} + ${result.CreateTime + 4}`
+                    isrepeatTS(tempStr4, result.MsgId)
+                }
+                //这里的判断，仅在未认证域名下的测试，绝对不能在正式环境中，认证域名下使用！！！！！！！！！！！！！！！！！！
 
                 //判断使用哪个方式去处理，默认nothing因为处理界面中没有nothing的
                 let key = "nothing";
@@ -241,13 +269,6 @@ class WeChat {
                     key = "EventKey"
 
                 } else if (result.MsgId) {
-                    //微信文档对于信息重排的判断
-                    if(that.MsgId === result.MsgId){
-                        res.send('');
-                    }else{
-                        that.MsgId = result.MsgId;
-                    }
-
                     //所有接收用户消息，都会有一个MsgId先使用这个判断
                     // let MsgId = result.MsgId;
                     key = "MsgType"
@@ -260,7 +281,6 @@ class WeChat {
         });
     }
 }
-
 
 //暴露可供外部访问的接口
 module.exports = WeChat;
