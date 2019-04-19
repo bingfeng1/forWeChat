@@ -242,11 +242,13 @@ class WeChat {
                 let tempStr = `${result.FromUserName} + ${result.CreateTime}`
                 console.log(tempStr, result.MsgId)
                 if (isrepeat.has(tempStr)) {
-                    if (isrepeat.get(tempStr) === undefined && result.MsgId !== undefined) {
-                        return res.send('')
-                    }
-                    if (isrepeat.get(tempStr) === result.MsgId) {
-                        return res.send('')
+                    if (!(result.MsgType && result.MsgType == "text")) {
+                        if (isrepeat.get(tempStr) === undefined && result.MsgId !== undefined) {
+                            return res.send('')
+                        }
+                        if (Array.from(isrepeat.values()).includes(result.MsgId)) {
+                            return res.send('')
+                        }
                     }
                 } else {
                     isrepeatTS(tempStr, result.MsgId)

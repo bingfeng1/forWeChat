@@ -74,8 +74,9 @@ const MsgType = new Map()
     .set('text',
         function (res, result) {
             let textContent = result.Content;
-            console.log(textContent)
-            res.send(msg.sendText(result, `回馈文字`));
+            console.log(textContent);
+            textContent = autoWord.has(textContent) ? autoWord.get(textContent) : textContent;
+            res.send(msg.sendText(result, textContent));
         })
     .set("image"
         , function (res, result) {
@@ -127,7 +128,7 @@ const MsgType = new Map()
 const Event = new Map()
     .set("subscribe",
         function (res, result) {
-            res.send(msg.sendText(result, `欢迎关注晓鸣测试公众号`));
+            res.send(msg.sendText(result, `欢迎关注晓鸣测试公众号，回复1查看git地址`));
             console.log('有人关注公众号了')
         })
     .set("unsubscribe",
@@ -148,3 +149,8 @@ module.exports = {
     MsgType,
     Event
 }
+
+// 文字自动回复
+const autoWord = new Map()
+    .set('1','项目的git 地址为：git@github.com:bingfeng1/forWeChat.git')
+    .set('2','自动回复还是蛮成功的')
