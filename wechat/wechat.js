@@ -282,6 +282,19 @@ class WeChat {
             }
         });
     }
+
+    // 获取公众号的自动回复规则
+    get_current_autoreply_info(){
+        let that = this;
+        return new Promise((resolve, reject) => {
+            let uri = util.format(that.apiURL.get_current_autoreply_info, that.apiDomain);
+            let qs = { access_token: that.accessToken }
+            that.requestGet(uri, qs).then(
+                data => resolve(data),
+                err => reject(err)
+            )
+        })
+    }
 }
 
 //暴露可供外部访问的接口

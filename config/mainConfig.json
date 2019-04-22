@@ -12,6 +12,7 @@
         "menuCreate":"%scgi-bin/menu/create",
         "menuGet":"%scgi-bin/menu/get",
         "menuDelete":"%scgi-bin/menu/delete",
-        "menuAddconditional":"%scgi-bin/menu/addconditional"
+        "menuAddconditional":"%scgi-bin/menu/addconditional",
+        "get_current_autoreply_info":"%scgi-bin/get_current_autoreply_info"
     }
 }

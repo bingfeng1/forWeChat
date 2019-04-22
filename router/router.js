@@ -72,5 +72,13 @@ router.get('/', function (req, res) {
             }
         )
     })
+    //创建个性化菜单栏
+    .get('/get_current_autoreply_info', (req, res) => {
+        wechatApp.get_current_autoreply_info().then(
+            (data) => {
+                res.send(data)
+            }
+        )
+    })
 
 module.exports = router
